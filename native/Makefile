@@ -424,7 +424,7 @@ debug:
 	echo "arch is:" $(ARCH)
 	echo "os is: " $(OS)
 	echo "cc is: " $(CC)
-	echo "lc is: " $(LC)
+	echo "ld is: " $(LD)
 
 install:
 	mkdir $(INSTALLDIR)
