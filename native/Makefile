@@ -464,7 +464,39 @@ endif
 $(TESTLIB2): $(BUILD)/testlib2.o
 	$(LD) $(LDFLAGS) $< $(TESTDEP) $(LIBS)
 
-
+ifneq ($(DYNAMIC_LIBFFI),true)
+$(FFI_LIB): 
+	@mkdir -p $(FFI_BUILD)
+	@if [ ! -f $(FFI_SRC)/configure ]; then \
+	  echo "Generating configure"; \
+	  (cd $(FFI_SRC); ./autogen.sh); \
+	fi
+	@if [ ! -f $(FFI_BUILD)/Makefile ]; then \
+	  echo "Configuring libffi ($(ARCH))"; \
+	  (cd $(FFI_BUILD) \
+	    && $(FFI_ENV) $(FFI_SRC)/configure $(FFI_CONFIG) $(HOST_CONFIG)); \
+	fi
+	$(MAKE) -C $(FFI_BUILD)
+ifneq ($(SDKROOT),)
+	@for arch in $(ALT_ARCHS); do \
+	  mkdir -p $(BUILD)/libffi.$$arch; \
+	  if [ ! -f $(BUILD)/libffi.$$arch/Makefile ]; then \
+	    echo "Configuring libffi ($$arch)"; \
+	    (cd $(BUILD)/libffi.$$arch \
+	     && CC="$(CC)" CFLAGS="-arch $$arch $(ISYSROOT) $(COPT) $(CDEBUG)" CPPFLAGS="$(CDEFINES)" \
+                LDFLAGS="-arch $$arch" \
+               $(FFI_SRC)/configure $(FFI_CONFIG) --host=$$arch-apple-darwin --disable-dependency-tracking); \
+	  fi; \
+	  $(MAKE) -C $(BUILD)/libffi.$$arch; \
+	done
+ifneq ($(ALT_ARCHS),)
+	/usr/bin/libtool -static -o $@.tmp $(FFI_BUILD)/.libs/${@F} $(BUILD)/libffi.*/.libs/${@F}
+else
+	/usr/bin/libtool -static -o $@.tmp $(FFI_BUILD)/.libs/${@F}
+endif
+	mv $@.tmp $@
+endif
+endif
 
 clean:
 	$(RM) -rf $(BUILD)
