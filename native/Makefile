@@ -265,7 +265,6 @@ endif
 
 ifeq ($(OS),linux)
 ARCH=$(shell uname -m | sed 's/i.86/i386/g')
-shell echo $(ARCH)
 PCFLAGS+=-fPIC
 CDEFINES+=-DHAVE_PROTECTION
 ifeq ($(DYNAMIC_LIBFFI),true)
@@ -275,6 +274,7 @@ else
 LDFLAGS+=-Wl,-soname,$@,-Bsymbolic
 endif
 endif
+
 
 ifneq (,$(findstring bsd,$(OS)))
 ARCH=$(shell uname -m | sed 's/i.86/i386/g')
@@ -415,6 +415,8 @@ ifneq ($(SDKROOT),)
 else
 	$(CC) $(CFLAGS) $(LOC_CC_OPTS) -c $< $(COUT)
 endif
+debug:
+	echo "arch is:" $(ARCH)
 
 all: $(LIBRARY) $(TESTLIB) $(TESTLIB2) $(TESTLIB_JAR) $(TESTLIB_PATH) $(TESTLIB_TRUNC)
 
