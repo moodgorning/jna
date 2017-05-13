@@ -264,7 +264,8 @@ endif
 endif
 
 ifeq ($(OS),linux)
-ARCH=$(shell uname -m | sed 's/i.86/i386/g')
+#ARCH=$(shell uname -m | sed 's/i.86/i386/g')
+ARCH="i386"
 PCFLAGS+=-fPIC
 CDEFINES+=-DHAVE_PROTECTION
 ifeq ($(DYNAMIC_LIBFFI),true)
@@ -349,8 +350,8 @@ ifneq ($(OS),aix)
 endif
 endif
 
-	  CC += -m32
-	  LD += -m32
+#	  CC += -m32
+#	  LD += -m32
 ifeq ($(OS),darwin)
 XCODE_VERSION=$(shell xcodebuild -version | grep Xcode | sed 's/^Xcode \([1-9]\).*/\1/g')
 JAVA_INCLUDES+=-I/System/Library/Frameworks/JavaVM.framework/Headers
