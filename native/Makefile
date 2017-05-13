@@ -325,27 +325,27 @@ endif
 # Enable 64-bit builds if the arch demands it
 ifeq ($(CC),gcc)
 ifneq ($(OS),aix)
-ifeq ($(ARCH),amd64)
-  CC += -m64
-  LD += -m64
-endif
-ifeq ($(ARCH),ppc64)
-  CC += -m64
-  LD += -m64
-endif
-ifeq ($(ARCH),ppc64le)
-  CC += -m64
-  LD += -m64
-endif
-ifeq ($(ARCH),ppc)
-  CC += -m32
-  LD += -m32
-  HOST_CONFIG=--host=ppc-linux
-endif
-ifeq ($(ARCH),i386)
-  CC += -m32
-  LD += -m32
-endif
+	ifeq ($(ARCH),amd64)
+	  CC += -m64
+	  LD += -m64
+	endif
+	ifeq ($(ARCH),ppc64)
+	  CC += -m64
+	  LD += -m64
+	endif
+	ifeq ($(ARCH),ppc64le)
+	  CC += -m64
+	  LD += -m64
+	endif
+	ifeq ($(ARCH),ppc)
+	  CC += -m32
+	  LD += -m32
+	  HOST_CONFIG=--host=ppc-linux
+	endif
+	ifeq ($(ARCH),i386)
+	  CC += -m32
+	  LD += -m32
+	endif
 endif
 endif
 
@@ -415,10 +415,16 @@ ifneq ($(SDKROOT),)
 else
 	$(CC) $(CFLAGS) $(LOC_CC_OPTS) -c $< $(COUT)
 endif
-debug:
-	echo "arch is:" $(ARCH)
+
+CC := $(CROSS_COMPILE)gcc
 
 all: $(LIBRARY) $(TESTLIB) $(TESTLIB2) $(TESTLIB_JAR) $(TESTLIB_PATH) $(TESTLIB_TRUNC)
+
+debug:
+	echo "arch is:" $(ARCH)
+	echo "os is: " $(OS)
+	echo "cc is: " $(CC)
+	echo "lc is: " $(LC)
 
 install:
 	mkdir $(INSTALLDIR)
