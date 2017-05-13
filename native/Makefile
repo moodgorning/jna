@@ -349,7 +349,8 @@ ifneq ($(OS),aix)
 endif
 endif
 
-
+	  CC += -m32
+	  LD += -m32
 ifeq ($(OS),darwin)
 XCODE_VERSION=$(shell xcodebuild -version | grep Xcode | sed 's/^Xcode \([1-9]\).*/\1/g')
 JAVA_INCLUDES+=-I/System/Library/Frameworks/JavaVM.framework/Headers
